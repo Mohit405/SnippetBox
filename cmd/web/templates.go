@@ -2,19 +2,20 @@ package main
 
 import (
 	"html/template"
-	"net/url"
 	"path/filepath"
 	"time"
 
+	"github.com/mohit405/pkg/forms"
 	"github.com/mohit405/pkg/models"
 )
 
 type templateData struct {
-	CurrentYear int
-	FormErrors  map[string]string
-	FormData    url.Values
-	Snippet     *models.Snippet
-	Snippets    []*models.Snippet
+	AuthenticatedUser *models.User
+	CurrentYear       int
+	Form              *forms.Form
+	Flash             string
+	Snippet           *models.Snippet
+	Snippets          []*models.Snippet
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

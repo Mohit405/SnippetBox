@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/mohit405/pkg/models"
 )
 
 // The serverError helper writes an error message and stack trace to the errorLog
@@ -34,6 +36,10 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 	}
 
 	td.CurrentYear = time.Now().Year()
+	td.AuthenticatedUser = app.authenticatedUser(r)
+
+	//Add the flash message to the template data, if one exists
+	td.Flash = app.session.PopString(r, "flash")
 	return td
 }
 
@@ -61,4 +67,12 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// is another time where we pass our http.ResponseWriter to a function that
 	// takes an io.Writer.
 	buf.WriteTo(w)
+}
+
+func (app *application) authenticatedUser(r *http.Request) *models.User {
+	user, ok := r.Context().Value(contextKeyUser).(*models.User)
+	if !ok {
+		return nil
+	}
+	return user
 }
